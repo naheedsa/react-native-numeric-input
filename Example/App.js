@@ -51,7 +51,8 @@ export default class App extends Component {
           totalWidth={80}
           totalHeight={30}
           iconSize={10}
-          step={1}
+          incrementStep={1}
+          decrementStep={1}
           minValue={0}
           valueType="real"
           rounded editable={false}
@@ -69,7 +70,8 @@ export default class App extends Component {
           minValue={0}
           maxValue={9999}
           onLimitReached={(isMAx, msg) => console.log(msg)}
-          step={5}
+          incrementStep={5}
+          decrementStep={1}
           iconStyle={{ fontSize: 15, color: '#434A5E' }}
           inputStyle={{ fontSize: 18, color: '#434A5E' }}
           valueType='real'
@@ -98,7 +100,7 @@ export default class App extends Component {
         </Text>
         <NumericInput initValue={this.state.v4}
           value={this.state.v4}
-          onChange={(v4) => this.setState({ v4 })} type='up-down' valueType='real' step={0.5} />
+          onChange={(v4) => this.setState({ v4 })} type='up-down' valueType='real' incrementStep={0.5} decrementStep={0.5}/>
         <View style={styles.seprator} />
 
         <Text style={styles.instructions}>

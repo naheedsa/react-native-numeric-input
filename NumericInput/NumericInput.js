@@ -38,11 +38,11 @@ export default class NumericInput extends Component {
     }
     inc = () => {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
-        if (this.props.maxValue === null || (value + this.props.step < this.props.maxValue)) {
-            value = (value + this.props.step).toFixed(12)
+        if (isNaN(this.props.maxValue) || (value + this.props.incrementStep < this.props.maxValue)) {
+            value = (value + this.props.incrementStep).toFixed(12)
             value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
             this.setState({ value, stringValue: value.toString() })
-        } else if (this.props.maxValue !== null) {
+        } else if (!isNaN(this.props.maxValue)) {
             this.props.onLimitReached(true, 'Reached Maximum Value!')
             value = this.props.maxValue
             this.setState({ value, stringValue: value.toString() })
@@ -53,10 +53,10 @@ export default class NumericInput extends Component {
     }
     dec = () => {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
-        if (this.props.minValue === null || (value - this.props.step > this.props.minValue)) {
-            value = (value - this.props.step).toFixed(12)
+        if (isNaN(this.props.minValue) || (value - this.props.decrementStep > this.props.minValue)) {
+            value = (value - this.props.decrementStep).toFixed(12)
             value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
-        } else if (this.props.minValue !== null) {
+        } else if (!isNaN(this.props.minValue)) {
             this.props.onLimitReached(false, 'Reached Minimum Value!')
             value = this.props.minValue
         }
@@ -64,6 +64,7 @@ export default class NumericInput extends Component {
             this.props.onChange && this.props.onChange(Number(value))
         this.setState({ value, stringValue: value.toString() })
     }
+
     isLegalValue = (value, mReal, mInt) => value === '' || (((this.props.valueType === 'real' && mReal(value)) || (this.props.valueType !== 'real' && mInt(value))) && (this.props.maxValue === null || (parseFloat(value) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(value) >= this.props.minValue)))
 
     realMatch = (value) => value && value.match(/-?\d+(\.(\d+)?)?/) && value.match(/-?\d+(\.(\d+)?)?/)[0] === value.match(/-?\d+(\.(\d+)?)?/).input
@@ -126,10 +127,10 @@ export default class NumericInput extends Component {
         let match = this.state.stringValue.match(/-?[0-9]\d*(\.\d+)?/)
         let legal = match && match[0] === match.input && ((this.props.maxValue === null || (parseFloat(this.state.stringValue) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(this.state.stringValue) >= this.props.minValue)))
         if (!legal) {
-            if (this.props.minValue !== null && (parseFloat(this.state.stringValue) <= this.props.minValue)) {
+            if (!isNaN(this.props.minValue) && (parseFloat(this.state.stringValue) <= this.props.minValue)) {
                 this.props.onLimitReached(true, 'Reached Minimum Value!')
             }
-            if (this.props.maxValue !== null && (parseFloat(this.state.stringValue) >= this.props.maxValue)) {
+            if (!isNaN(this.props.maxValue) && (parseFloat(this.state.stringValue) >= this.props.maxValue)) {
                 this.props.onLimitReached(false, 'Reached Maximum Value!')
             }
             if (this.ref) {
@@ -301,7 +302,8 @@ NumericInput.propTypes = {
     value: PropTypes.number,
     minValue: PropTypes.number,
     maxValue: PropTypes.number,
-    step: PropTypes.number,
+    incrementStep: PropTypes.number,
+    decrementStep: PropTypes.number,
     upDownButtonsBackgroundColor: PropTypes.string,
     rightButtonBackgroundColor: PropTypes.string,
     leftButtonBackgroundColor: PropTypes.string,
@@ -328,7 +330,8 @@ NumericInput.defaultProps = {
     value: null,
     minValue: null,
     maxValue: null,
-    step: 1,
+    incrementStep: 1,
+    decrementStep: 1,
     upDownButtonsBackgroundColor: 'white',
     rightButtonBackgroundColor: 'white',
     leftButtonBackgroundColor: 'white',
