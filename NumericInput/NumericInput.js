@@ -21,7 +21,7 @@ export default class NumericInput extends Component {
 
     // this.props refers to the new props
     componentDidUpdate() {
-        const initSent = !(this.props.initValue !== 0 && !this.props.initValue); 
+        const initSent = !(this.props.initValue !== 0 && !this.props.initValue);
 
         // compare the new value (props.initValue) with the existing/old one (this.state.value)
         if (this.props.initValue !== this.state.value && initSent) {
@@ -32,7 +32,7 @@ export default class NumericInput extends Component {
             });
         }
     }
-    
+
     updateBaseResolution = (width, height) => {
         calcSize = create({ width, height })
     }
@@ -49,7 +49,10 @@ export default class NumericInput extends Component {
 
         }
         if (value !== this.props.value)
+        {
             this.props.onChange && this.props.onChange(Number(value))
+            this.props.onBlur && this.props.onBlur(Number(value))
+        }
     }
     dec = () => {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
@@ -61,7 +64,10 @@ export default class NumericInput extends Component {
             value = this.props.minValue
         }
         if (value !== this.props.value)
+        {
             this.props.onChange && this.props.onChange(Number(value))
+            this.props.onBlur && this.props.onBlur(Number(value))
+        }
         this.setState({ value, stringValue: value.toString() })
     }
     isLegalValue = (value, mReal, mInt) => value === '' || (((this.props.valueType === 'real' && mReal(value)) || (this.props.valueType !== 'real' && mInt(value))) && (this.props.maxValue === null || (parseFloat(value) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(value) >= this.props.minValue)))
@@ -110,14 +116,15 @@ export default class NumericInput extends Component {
             parsedValue = isNaN(parsedValue) ? 0 : parsedValue
             if (parsedValue !== this.props.value)
                 this.props.onChange && this.props.onChange(parsedValue)
-            this.setState({ value: parsedValue, legal, stringValue: parsedValue.toString() })
+            //this.setState({ value: parsedValue, legal, stringValue: parsedValue.toString() })
+            this.setState({ value: parsedValue, legal, stringValue: value })
         } else {
             this.setState({ stringValue: value })
             let parsedValue = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
             parsedValue = isNaN(parsedValue) ? 0 : parsedValue
             if (parsedValue !== this.props.value)
                 this.props.onChange && this.props.onChange(parsedValue)
-            this.setState({ value: parsedValue, legal, stringValue: parsedValue.toString() })
+            this.setState({ value: parsedValue, legal, stringValue: value })
 
         }
     }
@@ -147,7 +154,7 @@ export default class NumericInput extends Component {
                 setTimeout(() => this.ref.focus(), 50)
             }
         }
-        this.props.onBlur && this.props.onBlur()
+        this.props.onBlur && this.props.onBlur(this.state.value)
     }
 
     onFocus = () => {
