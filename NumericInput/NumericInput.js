@@ -38,11 +38,11 @@ export default class NumericInput extends Component {
     }
     inc = () => {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
-        if (isNaN(this.props.maxValue) || (value + this.props.incrementStep < this.props.maxValue)) {
+        if (this.props.maxValue === null || (value + this.props.incrementStep < this.props.maxValue)) {
             value = (value + this.props.incrementStep).toFixed(12)
             value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
             this.setState({ value, stringValue: value.toString() })
-        } else if (!isNaN(this.props.maxValue)) {
+        } else if (this.props.maxValue !== null) {
             this.props.onLimitReached(true, 'Reached Maximum Value!')
             value = this.props.maxValue
             this.setState({ value, stringValue: value.toString() })
@@ -53,10 +53,10 @@ export default class NumericInput extends Component {
     }
     dec = () => {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
-        if (isNaN(this.props.minValue) || (value - this.props.decrementStep > this.props.minValue)) {
+        if (this.props.minValue === null || (value - this.props.decrementStep > this.props.minValue)) {
             value = (value - this.props.decrementStep).toFixed(12)
             value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
-        } else if (!isNaN(this.props.minValue)) {
+        } else if (this.props.minValue !== null) {
             this.props.onLimitReached(false, 'Reached Minimum Value!')
             value = this.props.minValue
         }
@@ -64,7 +64,6 @@ export default class NumericInput extends Component {
             this.props.onChange && this.props.onChange(Number(value))
         this.setState({ value, stringValue: value.toString() })
     }
-
     isLegalValue = (value, mReal, mInt) => value === '' || (((this.props.valueType === 'real' && mReal(value)) || (this.props.valueType !== 'real' && mInt(value))) && (this.props.maxValue === null || (parseFloat(value) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(value) >= this.props.minValue)))
 
     realMatch = (value) => value && value.match(/-?\d+(\.(\d+)?)?/) && value.match(/-?\d+(\.(\d+)?)?/)[0] === value.match(/-?\d+(\.(\d+)?)?/).input
