@@ -74,7 +74,7 @@ export default class NumericInput extends Component {
     }
     isLegalValue = (value, mReal, mInt) => value === '' || (((this.props.valueType === 'real' && mReal(value)) || (this.props.valueType !== 'real' && mInt(value))) && (this.props.maxValue === null || (parseFloat(value) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(value) >= this.props.minValue)))
 
-    realMatch = (value) => value && value.match(/-?\d+(\.\,(\d+)?)?/) && value.match(/-?\d+(\.\,(\d+)?)?/)[0] === value.match(/-?\d+(\.(\d+)?)?/).input
+    realMatch = (value) => value && value.match(/-?\d+(\.\,(\d+)?)?/) && value.match(/-?\d+(\.\,(\d+)?)?/)[0] === value.match(/-?\d+(\.\,(\d+)?)?/).input
 
     intMatch = (value) => value && value.match(/-?\d+/) && value.match(/-?\d+/)[0] === value.match(/-?\d+/).input
 
