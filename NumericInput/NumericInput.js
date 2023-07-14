@@ -40,11 +40,11 @@ export default class NumericInput extends Component {
     }
     inc = () => {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
-        if (this.props.maxValue === null || (value + this.props.incrementStep < this.props.maxValue)) {
-            value = (value + this.props.incrementStep).toFixed(12)
+        if (this.props.maxValue === undefined || (value + this.props.incrementStep < this.props.maxValue)) {
+            value = (value + this.props.incrementStep).toFixed(this.props.precision)
             value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
             this.setState({ value, stringValue: value.toString() })
-        } else if (this.props.maxValue !== null) {
+        } else {
             this.props.onLimitReached(true, 'Reached Maximum Value!')
             value = this.props.maxValue
             this.setState({ value, stringValue: value.toString() })
@@ -58,10 +58,10 @@ export default class NumericInput extends Component {
     }
     dec = () => {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
-        if (this.props.minValue === null || (value - this.props.decrementStep > this.props.minValue)) {
-            value = (value - this.props.decrementStep).toFixed(12)
+        if (this.props.minValue === undefined || (value - this.props.decrementStep > this.props.minValue)) {
+            value = (value - this.props.decrementStep).toFixed(this.props.precision)
             value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
-        } else if (this.props.minValue !== null) {
+        } else {
             this.props.onLimitReached(false, 'Reached Minimum Value!')
             value = this.props.minValue
         }
