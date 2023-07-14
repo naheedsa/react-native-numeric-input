@@ -15,7 +15,7 @@ export default class NumericInput extends Component {
             initValue: props.initValue,
             value: noInitSent ? props.value ? props.value : 0 : props.initValue,
             lastValid: noInitSent ? props.value ? props.value : 0 : props.initValue,
-            stringValue: (noInitSent ? props.value ? props.value : 0 : props.initValue).toString(),
+            stringValue: (noInitSent ? props.value ? props.value : 0 : props.initValue).toFixed(this.props.precision),
         }
         this.ref = null
     }
@@ -30,7 +30,7 @@ export default class NumericInput extends Component {
                 initValue: this.props.initValue,
                 value: this.props.initValue,
                 lastValid: this.props.initValue,
-                stringValue: this.props.initValue.toString()
+                stringValue: this.props.initValue.toFixed(this.props.precision)
             });
         }
     }
@@ -43,11 +43,11 @@ export default class NumericInput extends Component {
         if (this.props.maxValue === undefined || (value + this.props.incrementStep < this.props.maxValue)) {
             value = (value + this.props.incrementStep).toFixed(this.props.precision)
             value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
-            this.setState({ value, stringValue: value.toString() })
+            this.setState({ value, stringValue: value.toFixed(this.props.precision) })
         } else {
             this.props.onLimitReached(true, 'Reached Maximum Value!')
             value = this.props.maxValue
-            this.setState({ value, stringValue: value.toString() })
+            this.setState({ value, stringValue: value.toFixed(this.props.precision) })
 
         }
         if (value !== this.props.value)
@@ -70,7 +70,7 @@ export default class NumericInput extends Component {
             this.props.onChange && this.props.onChange(Number(value))
             this.props.onBlur && this.props.onBlur(Number(value))
         }
-        this.setState({ value, stringValue: value.toString() })
+        this.setState({ value, stringValue: value.toFixed(this.props.precision) })
     }
     isLegalValue = (value, mReal, mInt) => value === '' || (((this.props.valueType === 'real' && mReal(value)) || (this.props.valueType !== 'real' && mInt(value))) && (this.props.maxValue === null || (parseFloat(value) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(value) >= this.props.minValue)))
 
@@ -133,7 +133,7 @@ export default class NumericInput extends Component {
     onBlur = () => {
 
         let match = this.state.stringValue.match(/-?[0-9]\d*(\.\d+)?/)
-        let legal = match && match[0] === match.input && ((this.props.maxValue === null || (parseFloat(this.state.stringValue) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(this.state.stringValue) >= this.props.minValue)))
+        let legal = match && match[0] === match.input && ((this.props.maxValue === undefined || (parseFloat(this.state.stringValue) <= this.props.maxValue)) && (this.props.minValue === undefined || (parseFloat(this.state.stringValue) >= this.props.minValue)))
         if (!legal) {
             if (!isNaN(this.props.minValue) && (parseFloat(this.state.stringValue) <= this.props.minValue)) {
                 this.props.onLimitReached(true, 'Reached Minimum Value!')
@@ -148,7 +148,7 @@ export default class NumericInput extends Component {
                     setTimeout(() => {
                         this.props.onChange && this.props.onChange(this.state.lastValid)
                         this.setState({ value: this.state.lastValid }, () => {
-                            this.setState({ value: this.state.lastValid, stringValue: this.state.lastValid.toString() })
+                            this.setState({ value: this.state.lastValid, stringValue: this.state.lastValid.toFixed(this.props.precision) })
                             this.props.onChange && this.props.onChange(this.state.lastValid)
                         })
                     }, 10)
