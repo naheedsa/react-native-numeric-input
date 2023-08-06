@@ -42,12 +42,14 @@ export default class NumericInput extends Component {
         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
         if (this.props.maxValue === undefined || (value + this.props.incrementStep < this.props.maxValue)) {
             value = (value + this.props.incrementStep).toFixed(12)
-            value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value)
-            this.setState({ value, stringValue: value.toString() })
+            value = this.props.valueType === 'real' ? parseFloat(value) : parseInt(value);
+            if(value)
+                this.setState({ value, stringValue: value.toString() })
         } else {
             this.props.onLimitReached(true, 'Reached Maximum Value!')
             value = this.props.maxValue
-            this.setState({ value, stringValue: value.toString() })
+            if(value)
+                this.setState({ value, stringValue: value.toString() })
 
         }
         if (value !== this.props.value)
@@ -70,7 +72,8 @@ export default class NumericInput extends Component {
             this.props.onChange && this.props.onChange(Number(value))
             this.props.onBlur && this.props.onBlur(Number(value))
         }
-        this.setState({ value, stringValue: value.toString() })
+        if(value)
+            this.setState({ value, stringValue: value.toString() })
     }
     isLegalValue = (value, mReal, mInt) => value === '' || (((this.props.valueType === 'real' && mReal(value)) || (this.props.valueType !== 'real' && mInt(value))) && (this.props.maxValue === null || (parseFloat(value) <= this.props.maxValue)) && (this.props.minValue === null || (parseFloat(value) >= this.props.minValue)))
 
